@@ -3,76 +3,72 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <title>The Dwarven Mine – Medivia Betting House</title>
-
-  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Fantasy Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Uncial+Antiqua&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
-
   <link rel="stylesheet" href="styles.css" />
   <link rel="icon" type="image/png" href="assets/favicon.png" />
 </head>
-
 <body class="theme-dark">
-
   <header class="header">
     <img src="assets/logo.png" class="logo" />
     <h1 class="title fancy-font">The Dwarven Mine</h1>
     <p class="subtitle">Medivia's First Betting House (Legacy)</p>
-
     <button class="theme-toggle" onclick="toggleTheme()">🌓 Toggle Theme</button>
   </header>
 
+  <div id="fetchWarning" style="max-width:980px;margin:8px auto 0;padding:8px 12px;border-radius:6px;display:none;background:#3a2a1a;color:#ffd;"></div>
+
   <main class="container">
-
- <!-- Weekly Match -->
-<section class="panel">
-  <h2 class="panel-title fancy-font">This Week's Match</h2>
-
-  <div class="match-grid">
-    <div>
-      <p class="team">⚔️ <span id="teamA"></span></p>
-      <p class="team">🛡️ <span id="teamB"></span></p>
-      <p class="team">⚖️ <strong>Draw</strong></p>
-    </div>
-
-    <div class="countdown-box">
-      <p>Match begins in:</p>
-      <p id="countdown" class="countdown"></p>
-    </div>
-  </div>
-
-  <!-- Betting totals / pool summary -->
-  <div class="stats-grid" style="margin-top:14px;">
-    <div class="stat-box">
-      <div class="stat-label">Total on <span id="labelA" class="fancy-font"></span></div>
-      <div id="betsA" class="stat-value">0</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-label">Total on <span id="labelB" class="fancy-font"></span></div>
-      <div id="betsB" class="stat-value">0</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-label">Total on Draw</div>
-      <div id="betsDraw" class="stat-value">0</div>
-    </div>
-    <div class="stat-box wide">
-      <div class="stat-label">Combined Pool</div>
-      <div id="totalPool" class="stat-value">0</div>
-      <div class="meta-line">House Cut (15%): <span id="houseCut">0</span> &nbsp;•&nbsp; Prize Pool (85%): <span id="prizePool">0</span></div>
-    </div>
-  </div>
-
-  <p class="prize-line fancy-font mt-3">
-    These totals reflect all wagers currently recorded for the upcoming match.
-  </p>
-
-</section>
-    <!-- The system -->
     <section class="panel">
+      <h2 class="panel-title fancy-font">This Week's Match</h2>
+      <div class="match-grid">
+        <div class="team-block">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <img id="logoA" class="team-logo" src="https://static.files.bbci.co.uk/core/website/assets/static/sport/football/barcelona.dc54ba5874.svg" alt="Barcelona FC logo" />
+            <p class="team">⚔️ <span id="teamA"></span></p>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;margin-top:8px;">
+            <img id="logoB" class="team-logo" src="https://static.files.bbci.co.uk/core/website/assets/static/sport/football/chelsea.59e0e1ec22.svg" alt="Chelsea FC logo" />
+            <p class="team">🛡️ <span id="teamB"></span></p>
+          </div>
+
+          <!-- Draw: image (harmonic size) + text (no emoji) -->
+          <div style="display:flex;align-items:center;gap:12px;margin-top:10px;">
+            <img id="logoDraw" class="draw-logo" src="https://wiki.medivia.online/images/8/8c/Barrel_%28II%29.png" alt="Draw logo" />
+            <p class="team"><strong>Draw</strong></p>
+          </div>
+        </div>
+
+        <div class="countdown-box">
+          <p>Match begins in:</p>
+          <p id="countdown" class="countdown"></p>
+        </div>
+      </div>
+
+      <div class="stats-grid" style="margin-top:14px;">
+        <div class="stat-box">
+          <div class="stat-label">Total on <span id="labelA" class="fancy-font"></span></div>
+          <div id="betsA" class="stat-value">0</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Total on <span id="labelB" class="fancy-font"></span></div>
+          <div id="betsB" class="stat-value">0</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Total on Draw</div>
+          <div id="betsDraw" class="stat-value">0</div>
+        </div>
+        <div class="stat-box wide">
+          <div class="stat-label">Combined Pool</div>
+          <div id="totalPool" class="stat-value">0</div>
+          <div class="meta-line">House Cut (15%): <span id="houseCut">0</span> &nbsp;•&nbsp; Prize Pool (85%): <span id="prizePool">0</span></div>
+        </div>
+      </div>
+    </section>
+
+
+     <section class="panel">
       <h2 class="panel-title fancy-font">Welcome</h2>
 
       <p>
@@ -91,24 +87,10 @@
         - If you bet on the correct result, your share = (yourBet / totalBetsOnThatResult) × prizePool
       </p>
 <br>
-      <p>
-        Example: you bet 100 gold on Team A. All bets are: Team A = 1000, Team B = 750, Draw = 250.
-        totalPool = 2000 → houseCut = 300 → prizePool = 1700.<br>
-        Your payout = (100 / 1000) × 1700 = 170 gold (your original bet included in this scheme is not returned separately).
-      </p>
+   </section>
 
-      <p>
-
-      </p>
-    </section>
-
-
-
-
-    <!-- How Betting Works -->
-    <section class="panel">
+   <section class="panel">
       <h2 class="panel-title fancy-font">How to place a bet</h2>
-
       <p>
   All bets shall be placed <strong>inside Medivia’s Legacy server</strong>.  <br>
   Every wager is recorded using an in-game <strong>Document</strong>, which acts as your
@@ -129,25 +111,30 @@
 
     </section>
 
-
-    <!-- Past Matches -->
     <section class="panel">
       <h2 class="panel-title fancy-font">Past Matches</h2>
       <table class="history-table" id="historyTable"></table>
     </section>
 
-    <!-- Torch Animation -->
     <img src="https://wiki.medivia.online/images/a/aa/Dwarf_General.png" class="torch left-torch" />
     <img src="https://wiki.medivia.online/images/a/aa/Dwarf_General.png" class="torch right-torch" />
-
   </main>
 
-  <footer class="footer">
-    The Dwarven Mine — Medivia (Legacy)<br />
-    All trademarks belong to their respective owners.
-  </footer>
+  <footer class="footer">The Dwarven Mine — Medivia (Legacy)<br/>All trademarks belong to their respective owners.</footer>
 
+  <script>
+    window.INITIAL_MATCH_DATA = {
+  "teamA": "Barcelona FC",
+  "teamB": "Chelsea FC",
+  "matchTime": "2025-11-25T17:00",
+  "betsA": 50000,
+  "betsB": 45000,
+  "betsDraw": 17000,
+  "logoA": "https://static.files.bbci.co.uk/core/website/assets/static/sport/football/barcelona.dc54ba5874.svg",
+  "logoB": "https://static.files.bbci.co.uk/core/website/assets/static/sport/football/chelsea.59e0e1ec22.svg",
+  "logoDraw": "https://wiki.medivia.online/images/8/8c/Barrel_%28II%29.png"
+};
+  </script>
   <script src="main.js"></script>
-
 </body>
 </html>

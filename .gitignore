@@ -6,6 +6,7 @@ backend/instance/*.db
 backend/database/migrations/
 
 admin.html
+admin.js
 
 # Ignore environment variables (API keys, database credentials)
 .env

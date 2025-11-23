@@ -228,6 +228,24 @@ label input:focus {
   opacity: 0.9;
 }
 
+/* Team & Draw logo aesthetic limits: uniform square size, responsive */
+.team-logo,
+.draw-logo {
+  width: clamp(48px, 8vw, 80px);
+  height: clamp(48px, 8vw, 80px);
+  object-fit: contain; /* keep aspect ratio, centered */
+  display: inline-block;
+  border-radius: 8px;
+  border: 2px solid rgba(0,0,0,0.06);
+  background: rgba(0,0,0,0.03);
+}
+
+/* Ensure logos align nicely with text vertically */
+.team-block .team-logo,
+.team-block .draw-logo {
+  vertical-align: middle;
+}
+
 /* Responsive adjustments */
 @media (max-width: 640px) {
   .match-grid {
