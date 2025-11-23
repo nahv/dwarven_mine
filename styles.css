@@ -265,3 +265,9 @@ label input:focus {
   .stats-grid { grid-template-columns: 1fr; }
 }
 
+footer {
+  text-align: center;
+  font-size: 13px;
+  color: rgba(255,255,255,0.6);
+  margin: 24px 0;
+}
