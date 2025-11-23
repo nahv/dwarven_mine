@@ -159,7 +159,7 @@ function applyEmbeddedOrLocalData() {
 
 // ---- History (unchanged) ----
 const historyData = [
-  { match: "—", winner: "", prize: "" },
+  { match: "—", winner: "—", prize: "—" },
 ];
 
 function loadHistory() {

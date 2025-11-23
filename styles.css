@@ -88,7 +88,7 @@ body {
 .match-grid {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-evenly;
   gap: 18px;
   flex-wrap: wrap;
 }
@@ -250,7 +250,7 @@ label input:focus {
 @media (max-width: 640px) {
   .match-grid {
     flex-direction: column;
-    align-items: stretch;
+    align-items: space-evenly;
   }
   .header {
     padding: 16px 8px;
