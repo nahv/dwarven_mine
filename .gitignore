@@ -1,0 +1,46 @@
+# Ignore SQLite database files
+instance/
+backend/instance/
+backend/database/*.db
+backend/instance/*.db
+backend/database/migrations/
+
+admin.html
+
+# Ignore environment variables (API keys, database credentials)
+.env
+config.py
+venv/
+
+# Ignore compiled Python files
+__pycache__/
+*.pyc
+
+# Ignore Electron dependencies
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Ignore logs and cache
+*.log
+backend/logs/
+frontend/logs/
+
+# Ignore editor/IDE settings
+.vscode/
+.idea/
+*.swp
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore temporary files
+*.tmp
+background/
+# Ignore build artifacts
+build/
+dist/
+# Ignore coverage reports
+coverage/

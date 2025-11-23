@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>The Dwarven Mine – Medivia Betting House</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Fantasy Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Uncial+Antiqua&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+</head>
+
+<body class="theme-dark">
+
+  <header class="header">
+    <img src="assets/logo.png" class="logo" />
+    <h1 class="title fancy-font">The Dwarven Mine</h1>
+    <p class="subtitle">Medivia's First Betting House (Legacy)</p>
+
+    <button class="theme-toggle" onclick="toggleTheme()">🌓 Toggle Theme</button>
+  </header>
+
+  <main class="container">
+
+ <!-- Weekly Match -->
+<section class="panel">
+  <h2 class="panel-title fancy-font">This Week's Match</h2>
+
+  <div class="match-grid">
+    <div>
+      <p class="team">⚔️ <span id="teamA"></span></p>
+      <p class="team">🛡️ <span id="teamB"></span></p>
+      <p class="team">⚖️ <strong>Draw</strong></p>
+    </div>
+
+    <div class="countdown-box">
+      <p>Match begins in:</p>
+      <p id="countdown" class="countdown"></p>
+    </div>
+  </div>
+
+  <!-- Betting totals / pool summary -->
+  <div class="stats-grid" style="margin-top:14px;">
+    <div class="stat-box">
+      <div class="stat-label">Total on <span id="labelA" class="fancy-font"></span></div>
+      <div id="betsA" class="stat-value">0</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">Total on <span id="labelB" class="fancy-font"></span></div>
+      <div id="betsB" class="stat-value">0</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">Total on Draw</div>
+      <div id="betsDraw" class="stat-value">0</div>
+    </div>
+    <div class="stat-box wide">
+      <div class="stat-label">Combined Pool</div>
+      <div id="totalPool" class="stat-value">0</div>
+      <div class="meta-line">House Cut (15%): <span id="houseCut">0</span> &nbsp;•&nbsp; Prize Pool (85%): <span id="prizePool">0</span></div>
+    </div>
+  </div>
+
+  <p class="prize-line fancy-font mt-3">
+    These totals reflect all wagers currently recorded for the upcoming match.
+  </p>
+
+</section>
+    <!-- The system -->
+    <section class="panel">
+      <h2 class="panel-title fancy-font">Welcome</h2>
+
+      <p>
+        Hark, traveler — the maul and shield may lock in stalemate.<br> From this night onward,
+        the Dwarven Mine accepts wagers for the game.<br>
+        You may place your gold on Team A, Team B, or Draw. All coins go into a single
+        communal pot.<br>The House keeps 15% to keep the hearth warm; the rest (85%) is split
+        among those who guessed the true outcome.
+      </p>
+ <br> 
+      <p>
+        How winnings are decided (simple as a dwarven ale mug):<br>
+        - totalPool = sum of all bets (A + B + Draw)<br>
+        - houseCut = totalPool × 15%<br>
+        - prizePool = totalPool × 85%<br>
+        - If you bet on the correct result, your share = (yourBet / totalBetsOnThatResult) × prizePool
+      </p>
+<br>
+      <p>
+        Example: you bet 100 gold on Team A. All bets are: Team A = 1000, Team B = 750, Draw = 250.
+        totalPool = 2000 → houseCut = 300 → prizePool = 1700.<br>
+        Your payout = (100 / 1000) × 1700 = 170 gold (your original bet included in this scheme is not returned separately).
+      </p>
+
+      <p>
+
+      </p>
+    </section>
+
+
+
+
+    <!-- How Betting Works -->
+    <section class="panel">
+      <h2 class="panel-title fancy-font">How Betting Works</h2>
+
+      <p>
+  All bets shall be be placed <strong>inside Medivia’s Legacy server</strong>.  <br>
+  Every wager is recorded using an in-game <strong>Document</strong>, which acts as your
+  official betting ticket.
+</p>
+
+<p class="mt-3">
+  When you place a bet, the house will write your details on a Document and return it to you:
+  <br><img style="display: inline;" src="https://wiki.medivia.online/images/5/5e/Document.png">
+  <br>
+  <br>
+  Only Documents that are <strong>personally signed by the character “El Gotho”</strong> are
+  considered valid and eligible for payouts.
+  <br>
+  <br>
+  Keep your signed Document safe — it is your proof of wager and must be presented to claim any winnings.
+</p>
+
+    </section>
+
+
+    <!-- Past Matches -->
+    <section class="panel">
+      <h2 class="panel-title fancy-font">Past Matches</h2>
+      <table class="history-table" id="historyTable"></table>
+    </section>
+
+    <!-- Torch Animation -->
+    <img src="https://wiki.medivia.online/images/a/aa/Dwarf_General.png" class="torch left-torch" />
+    <img src="https://wiki.medivia.online/images/a/aa/Dwarf_General.png" class="torch right-torch" />
+
+  </main>
+
+  <footer class="footer">
+    The Dwarven Mine — Medivia (Legacy)<br />
+    All trademarks belong to their respective owners.
+  </footer>
+
+  <script src="main.js"></script>
+
+</body>
+</html>
