@@ -1,11 +1,13 @@
-// Load stored values or defaults
+// Default in-memory data (used if fetch fails)
 let matchData = {
   teamA: localStorage.getItem("teamA") || "Ironbeard Warriors",
   teamB: localStorage.getItem("teamB") || "Stoneguard Rangers",
   matchTime: localStorage.getItem("matchTime") || new Date(Date.now()+86400000).toISOString(),
   betsA: parseInt(localStorage.getItem("betsA")) || 30000,
   betsB: parseInt(localStorage.getItem("betsB")) || 15000,
-  betsDraw: parseInt(localStorage.getItem("betsDraw")) || 5000
+  betsDraw: parseInt(localStorage.getItem("betsDraw")) || 5000,
+  logoA: localStorage.getItem("logoA") || "assets/logo.png",
+  logoB: localStorage.getItem("logoB") || "assets/logo.png"
 };
 
 // House commission percentage
@@ -92,13 +94,72 @@ function samplePayoutExample(playerBet, outcomeKey) {
   return calculatePayout(playerBet, totalOnOutcome, totals.prizePool);
 }
 
-// ---- Load UI ----
+// ---- UI loader (ensures logos + text update) ----
 function loadUI() {
-  if (document.getElementById("teamA")) {
-    document.getElementById("teamA").textContent = matchData.teamA;
-    document.getElementById("teamB").textContent = matchData.teamB;
-    startCountdown();
-    updatePrizePoolDisplay();
+  const tA = document.getElementById("teamA");
+  const tB = document.getElementById("teamB");
+  const logoAEl = document.getElementById("logoA");
+  const logoBEl = document.getElementById("logoB");
+
+  if (tA) tA.textContent = matchData.teamA;
+  if (tB) tB.textContent = matchData.teamB;
+
+  if (logoAEl) {
+    logoAEl.src = matchData.logoA || "assets/logo.png";
+    logoAEl.alt = matchData.teamA + " logo";
+  }
+  if (logoBEl) {
+    logoBEl.src = matchData.logoB || "assets/logo.png";
+    logoBEl.alt = matchData.teamB + " logo";
+  }
+
+  startCountdown();
+  updatePrizePoolDisplay();
+}
+
+// ---- Load config.json from server (primary) ----
+async function loadConfigFromServer() {
+  try {
+    const res = await fetch('/config.json', { cache: "no-store" });
+    if (!res.ok) throw new Error('no config.json served');
+    const cfg = await res.json();
+    // Validate minimal shape and apply
+    if (cfg && (cfg.teamA || cfg.teamB)) {
+      matchData.teamA = cfg.teamA || matchData.teamA;
+      matchData.teamB = cfg.teamB || matchData.teamB;
+      matchData.matchTime = cfg.matchTime || matchData.matchTime;
+      matchData.betsA = Number(cfg.betsA || 0);
+      matchData.betsB = Number(cfg.betsB || 0);
+      matchData.betsDraw = Number(cfg.betsDraw || 0);
+      matchData.logoA = cfg.logoA || matchData.logoA;
+      matchData.logoB = cfg.logoB || matchData.logoB;
+    }
+    // hide fetch warning if present
+    const warn = document.getElementById("fetchWarning");
+    if (warn) { warn.style.display = "none"; warn.textContent = ""; }
+    return true;
+  } catch (e) {
+    // If opening via file:// this will fail. Show warning if element exists.
+    const warn = document.getElementById("fetchWarning");
+    if (warn) {
+      warn.style.display = "block";
+      warn.innerHTML = "Warning: Could not fetch /config.json (using local values). Serve the site over HTTP (e.g. `python -m http.server`) or use GitHub Pages to allow fetch.";
+    }
+    // fallback: try localStorage if present (for offline admin)
+    try {
+      const lsTeamA = localStorage.getItem("teamA");
+      if (lsTeamA) {
+        matchData.teamA = localStorage.getItem("teamA");
+        matchData.teamB = localStorage.getItem("teamB");
+        matchData.matchTime = localStorage.getItem("matchTime");
+        matchData.betsA = parseInt(localStorage.getItem("betsA")) || matchData.betsA;
+        matchData.betsB = parseInt(localStorage.getItem("betsB")) || matchData.betsB;
+        matchData.betsDraw = parseInt(localStorage.getItem("betsDraw")) || matchData.betsDraw;
+        matchData.logoA = localStorage.getItem("logoA") || matchData.logoA;
+        matchData.logoB = localStorage.getItem("logoB") || matchData.logoB;
+      }
+    } catch(e2){ /* ignore */ }
+    return false;
   }
 }
 
@@ -113,30 +174,81 @@ function loadAdmin() {
   document.getElementById("adminBetsA").value = matchData.betsA;
   document.getElementById("adminBetsB").value = matchData.betsB;
   document.getElementById("adminBetsDraw").value = matchData.betsDraw;
+  // new logo fields
+  const la = document.getElementById("adminLogoA");
+  const lb = document.getElementById("adminLogoB");
+  if (la) la.value = matchData.logoA || "";
+  if (lb) lb.value = matchData.logoB || "";
 
   document.getElementById("saveBtn").onclick = saveAdmin;
-  document.getElementById("resetBtn").onclick = loadAdmin;
+  document.getElementById("resetBtn").onclick = () => {
+    loadConfigFromServer().then(()=> loadAdmin());
+  };
 }
 
-function saveAdmin() {
+// Prepare a plain object for config.json
+function buildConfigObject() {
+  return {
+    teamA: matchData.teamA,
+    teamB: matchData.teamB,
+    matchTime: matchData.matchTime,
+    betsA: Number(matchData.betsA) || 0,
+    betsB: Number(matchData.betsB) || 0,
+    betsDraw: Number(matchData.betsDraw) || 0,
+    logoA: matchData.logoA || "",
+    logoB: matchData.logoB || ""
+  };
+}
+
+// Download helper (unchanged)
+function downloadConfigFile(cfgObj) {
+  const blob = new Blob([JSON.stringify(cfgObj, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'config.json';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+async function saveAdmin() {
+  // read fields into matchData
   matchData.teamA = document.getElementById("adminTeamA").value;
   matchData.teamB = document.getElementById("adminTeamB").value;
   matchData.matchTime = document.getElementById("adminMatchTime").value;
   matchData.betsA = parseInt(document.getElementById("adminBetsA").value) || 0;
   matchData.betsB = parseInt(document.getElementById("adminBetsB").value) || 0;
   matchData.betsDraw = parseInt(document.getElementById("adminBetsDraw").value) || 0;
+  // read logo fields
+  const la = document.getElementById("adminLogoA");
+  const lb = document.getElementById("adminLogoB");
+  matchData.logoA = la ? la.value.trim() || matchData.logoA : matchData.logoA;
+  matchData.logoB = lb ? lb.value.trim() || matchData.logoB : matchData.logoB;
 
-  for (let k in matchData) {
-    // store numbers as numeric strings or ISO
-    localStorage.setItem(k, matchData[k]);
-  }
+  // persist fallback locally (optional)
+  try {
+    localStorage.setItem("teamA", matchData.teamA);
+    localStorage.setItem("teamB", matchData.teamB);
+    localStorage.setItem("matchTime", matchData.matchTime);
+    localStorage.setItem("betsA", String(matchData.betsA));
+    localStorage.setItem("betsB", String(matchData.betsB));
+    localStorage.setItem("betsDraw", String(matchData.betsDraw));
+    localStorage.setItem("logoA", matchData.logoA);
+    localStorage.setItem("logoB", matchData.logoB);
+  } catch(e){ /* ignore localStorage errors */ }
+
+  // Build config object and trigger download for manual commit
+  const cfgObj = buildConfigObject();
+  downloadConfigFile(cfgObj);
   updatePrizePoolDisplay();
-  alert("Saved.");
+  alert("Config prepared for download as config.json. Replace your repo's config.json with this file and push to update the site.");
 }
 
 // ---- History ----
 const historyData = [
-  { match: "Ironbeard Warriors vs Stoneguard Rangers", winner: "Draw", prize: "12,500" },
+  { match: "Barcelona vs Chelsea", winner: "", prize: "" },
 ];
 
 function loadHistory() {
@@ -156,7 +268,9 @@ function loadHistory() {
   });
 }
 
-window.onload = () => {
+// ---- App init ----
+window.onload = async () => {
+  await loadConfigFromServer(); // primary source; falls back to localStorage
   loadUI();
   loadAdmin();
   loadHistory();
